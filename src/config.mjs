@@ -1,13 +1,13 @@
 import defaultImage from './assets/images/indonode.png';
 
 const CONFIG = {
-  name: 'indonode',
+  name: 'hexnodes',
 
-  origin: 'https://indonode.net/',
+  origin: 'https://hexskrt.net/',
   basePathname: '/',
   trailingSlash: false,
 
-  title: 'Indonode - Highly Secured Staking Provider',
+  title: 'Hexnodes - Service Staking Provider',
   description:
     'Validator & Node Operator Cosmos Networks',
   defaultImage: defaultImage,

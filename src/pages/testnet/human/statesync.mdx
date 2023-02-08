@@ -16,13 +16,13 @@ version:
 sudo systemctl stop humansd
 humansd tendermint unsafe-reset-all --home $HOME/.humans --keep-addr-book
 
-SNAP_RPC="https://test-human-rpc.genznodes.dev:443"
+SNAP_RPC="https://rpc-testnet.humans.hexskrt.net:443"
 
 LATEST_HEIGHT=$(curl -s $SNAP_RPC/block | jq -r .result.block.header.height); \
 BLOCK_HEIGHT=$((LATEST_HEIGHT - 2000)); \
 TRUST_HASH=$(curl -s "$SNAP_RPC/block?height=$BLOCK_HEIGHT" | jq -r .result.block_id.hash)
 
-peers="0085de6a538d9ec1b3a63d6e77f4ae941bb63e2f@109.123.254.36:28656"
+peers="5b14c5d343fd3fbb061601c48e9a6e93d751c6c3@185.219.142.32:13656"
 sed -i 's|^persistent_peers *=.*|persistent_peers = "'$peers'"|' $HOME/.humans/config/config.toml
 
 sed -i -E "s|^(enable[[:space:]]+=[[:space:]]+).*$|\1true| ; \
