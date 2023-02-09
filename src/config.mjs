@@ -12,7 +12,7 @@ const CONFIG = {
     'Validator & Node Operator Cosmos Networks',
   defaultImage: defaultImage,
 
-  defaultTheme: 'system', // Values: "system" | "light" | "light:only"
+  defaultTheme: 'system', // Values: "light" | "light:only"
 
   language: 'en',
   textDirection: 'ltr',
