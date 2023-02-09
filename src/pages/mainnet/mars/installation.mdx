@@ -1,0 +1,153 @@
+---
+layout: '~/layouts/MarkdownLayout.astro'
+title: Installation Node
+icon: mars
+network: Mainnet
+chain: mars-1
+version: v1.0.0
+---
+
+### Hardware requirements
+
+The following requirements are recommended for running Mars:
+
+- 4 or more physical CPU cores
+- At least 200GB of SSD disk storage
+- At least 8GB of memory (RAM)
+- At least 100mbps network bandwidth
+
+### setting vars
+
+```
+NODENAME=<YOUR_MONIKER>
+```
+
+### Save and Import Variable
+
+```
+echo "export NODENAME=$NODENAME" >> $HOME/.bash_profile
+if [ ! $WALLET ]; then
+	echo "export WALLET=wallet" >> $HOME/.bash_profile
+fi
+echo "export MARS_CHAIN_ID=mars-1" >> $HOME/.bash_profile
+source $HOME/.bash_profile
+```
+
+### Install dependencies Required
+
+```
+sudo apt update && sudo apt upgrade -y && sudo apt install curl tar wget clang pkg-config libssl-dev jq build-essential bsdmainutils git make ncdu gcc git jq chrony liblz4-tool -y
+```
+
+### Install go
+
+We are gonna use GO Version 1.19
+If you already have GO installed you can skip this 
+
+```
+ver="1.19"
+cd $HOME
+wget "https://golang.org/dl/go$ver.linux-amd64.tar.gz"
+sudo rm -rf /usr/local/go
+sudo tar -C /usr/local -xzf "go$ver.linux-amd64.tar.gz"
+rm "go$ver.linux-amd64.tar.gz"
+echo "export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin" >> ~/.bash_profile
+source ~/.bash_profile
+go version
+```
+
+### Install binary
+
+```
+cd $HOME
+git clone https://github.com/mars-protocol/hub.git
+cd hub
+git checkout v1.0.0
+make install
+```
+
+Verify that you've installed marsd successfully
+
+```
+marsd version
+```
+
+### Prepare Cosmovisor
+```
+mkdir -p $HOME/.marsd/cosmovisor/genesis/bin
+mv build/marsd $HOME/.marsd/cosmovisor/genesis/bin/
+rm -rf build
+```
+```
+sudo ln -s $HOME/.marsd/cosmovisor/genesis $HOME/.marsd/cosmovisor/current
+sudo ln -s $HOME/.marsd/cosmovisor/current/bin/marsd /usr/local/bin/marsd
+```
+
+### Install Cosmovisor
+
+```
+go install cosmossdk.io/tools/cosmovisor/cmd/cosmovisor@v1.4.0
+```
+
+### Config app
+
+```
+marsd config chain-id mars-1
+marsd config keyring-backend file
+```
+
+### Initialize Node
+
+Please change `<YOUR_MONIKER>` To your own Moniker.
+
+```
+marsd init <YOUR_MONIKER> --chain-id $MARS_CHAIN_ID
+```
+
+### Download Genesis file and addrbook
+
+- Genesis
+
+```
+SOON
+```
+
+- Addrbook
+
+```
+SOON
+```
+
+### Create Service File and Start Node
+
+Create service file
+Create a `marsd.service` file in the `/etc/systemd/system` folder with the following code. 
+You can change `USER` with your Linux user name. You need sudo previlege to do this step.
+
+```
+sudo tee /etc/systemd/system/marsd.service > /dev/null <<EOF
+[Unit]
+Description=marsd
+After=network-online.target
+
+[Service]
+User=$USER
+ExecStart=$(which marsd) start --home $HOME/.mars
+Restart=on-failure
+RestartSec=3
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target
+EOF
+```
+
+- Enable Service and Start Node
+
+```
+sudo systemctl daemon-reload
+sudo systemctl enable marsd
+sudo systemctl restart marsd
+sudo journalctl -fu marsd -o cat
+```
+

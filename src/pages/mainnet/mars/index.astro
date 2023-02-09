@@ -4,12 +4,12 @@ import { getCanonical, getHomePermalink } from '~/utils/permalinks';
 import Layout from '~/layouts/PageLayout.astro';
 import { Icon } from 'astro-icon';
 
-const name= 'nolus';
-const icon= 'nolus';
-const chain= 'nolus-rila';
-const network= 'Testnet';
-const stake= 'https://explorer.hexskrt.net/';
-const version= 'v0.1.39';
+const name= 'Mars';
+const icon= 'mars';
+const network= 'Mainnet';
+const chain= 'mars-1';
+const version= 'v1.0.0';
+const stake= 'https://explorer.hexskrt.net/mars/staking/marsvaloper1wwgrl05jkk3a3m9gm0wwmvq3r0fd93p856cy06';
 const meta = {
 	title: SITE.title,
 	description: SITE.description,
@@ -19,44 +19,48 @@ const meta = {
 const items = [
 	{
 		title: 'Addrbook',
-		Link: 'https://hexskrt.net/testnet/nolus/addrbook',
+		Link: 'https://hexskrt.net/mainnet/mars/addrbook',
 	},
 	{
 		title: 'Api',
-		Link: 'https://hexskrt.net/testnet/nolus/api',
+		Link: 'https://hexskrt.net/mainnet/mars/api',
 	},
 	{
 		title: 'Explorer',
-		Link: 'https://testnet-explorer.genznodes.dev/nolus',
+		Link: 'https://explorer.hexskrt.net/mars',
 	},
 	{
 		title: 'Genesis file',
-		Link: 'https://hexskrt.net/testnet/nolus/grpc',
+		Link: 'https://hexskrt.net/mainnet/mars/genesis',
 	},
 	{
 		title: 'gRPC',
-		Link: 'https://hexskrt.net/testnet/nolus/grpc',
+		Link: 'https://hexskrt.net/mainnet/mars/grpc',
 	},
 	{
-		title: 'Node installation',
-		Link: 'https://hexskrt.net/testnet/nolus/installation',
+		title: 'Node Installation',
+		Link: 'https://hexskrt.net/mainnet/mars/installation',
 	},
 	{
 		title: 'Peers',
-		Link: 'https://hexskrt.net/testnet/nolus/peers',
+		Link: 'https://hexskrt.net/mainnet/mars/peers',
 	},
 	{
-		title: 'Rpc',
-		Link: 'https://hexskrt.net/testnet/nolus/rpc',
+		title: 'RpcRPC',
+		Link: 'https://hexskrt.net/mainnet/mars/rpc',
 	},
 	{
 		title: 'Statesync',
-		Link: 'https://hexskrt.net/testnet/nolus/statesync',
+		Link: 'https://hexskrt.net/mainnet/mars/statesync',
 	},
 	{
 		title: 'Snapshot',
-		Link: 'https://hexskrt.net/testnet/nolus/snapshot',
-	},	
+		Link: 'https://hexskrt.net/mainnet/mars/snapshot',
+	},
+	{
+		title: 'CLI Cheatsheet',
+		Link: 'https://hexskrt.net/mainnet/mars/cheat',
+	},		
 ]	
 ---
 
@@ -67,7 +71,7 @@ const items = [
 				<div class="text-center pb-5 md:pb-5 max-w-5xl mx-auto">
 					<Icon name={icon} class="w-20 h-20 inline-block align-text-bottom" />           
 					<h1 class="text-5xl md:text-[3.50rem] font-bold leading-tighter tracking-tighter mb-4 font-heading">
-						Service {name}
+						Service Mars Protocol {name}
 					</h1>
 					<a
 							class="btn bg-primary-400 w-1/4 items-center hover:bg-primary-400 font-bold md:pb-4"

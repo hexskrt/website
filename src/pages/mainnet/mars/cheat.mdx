@@ -1,0 +1,172 @@
+---
+layout: '~/layouts/MarkdownLayout.astro'
+title: Node CLI Cheatsheet
+icon: mars
+network: Mainnet
+chain: mars-1
+version: v1.0.0
+---
+
+### Acre CLI Cheatsheet
+
+- Always be careful with the capitalized words
+- Specify `--chain-id`
+
+### Wallet Management
+
+Add Wallet
+Specify the value `wallet` with your own wallet name
+
+```
+marsd keys add wallet
+```
+
+Recover Wallet
+```
+marsd keys add wallet --recover
+```
+
+List Wallet
+```
+marsd keys list
+```
+
+Delete Wallet
+```
+marsd keys delete wallet
+```
+
+Check Wallet Balance
+```
+marsd q bank balances $(marsd keys show wallet -a)
+```
+
+### Validator Management
+
+Please adjust `wallet` , `MONIKER` , `YOUR_KEYBASE_ID` , `YOUR_DETAILS` , `YOUUR_WEBSITE_URL`
+
+Create Validator
+```
+marsd tx staking create-validator -y \
+  --chain-id mars-1 \
+  --moniker hexnodes \
+  --pubkey "$(marsd tendermint show-validator)" \
+  --amount 100000000umars \
+  --identity "YOUR_KEYBASE_ID" \
+  --website "YOUUR_WEBSITE_URL" \
+  --details "YOUR_DETAILS" \
+  --from wallet \
+  --commission-rate=0.05 \
+  --commission-max-rate=0.20 \
+  --commission-max-change-rate=0.01 \
+  --min-self-delegation 1 \
+  --gas auto \
+  --gas-adjustment 1.4
+```
+
+Edit Validator
+```
+marsd tx staking edit-validator \
+--moniker="<MONIKER>" \
+--identity="YOUR_KEYBASE_ID" \
+--details="YOUR_DETAILS" \
+--website="YOUR_WEBSITE_URL"
+--chain-id mars-1 \
+--commission-rate=0.05 \
+--from=<wallet> \
+--gas-adjustment="1.4" \
+--gas auto \
+-y
+```
+
+
+Unjail Validator
+```
+marsd tx slashing unjail --from wallet --chain-id mars-1 --gas-adjustment 1.4 --gas auto --gas-prices="0.025umars" -y
+```
+
+Check Jailed Reason
+```
+marsd query slashing signing-info $(marsd tendermint show-validator)
+```
+
+### Token Management
+
+Withdraw Rewards
+```
+marsd tx distribution withdraw-all-rewards --from wallet --chain-id mars-1 --gas-adjustment 1.4 --gas auto --gas-prices="0.025umars" -y
+```
+
+Withdraw Rewards with Comission
+```
+marsd tx distribution withdraw-rewards $(marsd keys show wallet --bech val -a) --commission --from wallet --chain-id mars-1 --gas-adjustment 1.4 --gas auto --gas-prices="0.025umars" -y
+```
+
+Delegate Token to your own validator
+```
+marsd tx staking delegate $(marsd keys show wallet --bech val -a) 100000000umars --from wallet --chain-id mars-1 --gas-adjustment 1.4 --gas auto --gas-prices="0.025umars" -y
+```
+
+Delegate Token to other validator
+```
+marsd tx staking redelegate $(marsd keys show wallet --bech val -a) <TO_VALOPER_ADDRESS> 100000000umars --from wallet --chain-id mars-1 --gas-adjustment 1.4 --gas auto --gas-prices="0.025umars" -y
+```
+
+Unbond Token from your validator
+```
+marsd tx staking unbond $(marsd keys show wallet --bech val -a) 100000000umars --from wallet --chain-id acre_9052-1 --gas-adjustment 1.4 --gas auto --gas-prices="0.025umars" -y
+```
+
+Send Token to another wallet
+```
+marsd tx bank send wallet <TO_WALLET_ADDRESS> 100000000umars --from wallet --chain-id acre_9052-1
+```
+
+### Governance 
+
+Vote
+You can change the value of `yes` to `no`,`abstain`,`nowithveto`
+
+```
+marsd tx gov vote 1 yes --from wallet --chain-id acre_9052-1 --gas-adjustment 1.4 --gas auto --gas-prices="0.025umars" -y
+```
+
+### Other
+
+Set Your own Custom Ports
+You can change value `CUSTOM_PORT=14` To any other ports
+```
+CUSTOM_PORT=14
+sed -i -e "s%^proxy_app = \"tcp://127.0.0.1:26658\"%proxy_app = \"tcp://127.0.0.1:${CUSTOM_PORT}658\"%; s%^laddr = \"tcp://127.0.0.1:26657\"%laddr = \"tcp://127.0.0.1:${CUSTOM_PORT}657\"%; s%^pprof_laddr = \"localhost:6060\"%pprof_laddr = \"localhost:${CUSTOM_PORT}060\"%; s%^laddr = \"tcp://0.0.0.0:26656\"%laddr = \"tcp://0.0.0.0:${CUSTOM_PORT}656\"%; s%^prometheus_listen_addr = \":26660\"%prometheus_listen_addr = \":${CUSTOM_PORT}660\"%" $HOME/.marsd/config/config.toml
+sed -i -e "s%^address = \"tcp://0.0.0.0:1317\"%address = \"tcp://0.0.0.0:${CUSTOM_PORT}317\"%; s%^address = \":8080\"%address = \":${CUSTOM_PORT}080\"%; s%^address = \"0.0.0.0:9090\"%address = \"0.0.0.0:${CUSTOM_PORT}090\"%; s%^address = \"0.0.0.0:9091\"%address = \"0.0.0.0:${CUSTOM_PORT}091\"%" $HOME/.marsd/config/app.toml
+```
+
+Enable Indexing usually enabled by default
+```
+sed -i -e 's|^indexer *=.*|indexer = "kv"|' $HOME/.marsd/config/config.toml
+```
+
+Disable Indexing
+```
+sed -i -e 's|^indexer *=.*|indexer = "null"|' $HOME/.marsd/config/config.toml
+```
+
+Reset Chain Data
+```
+marsd tendermint unsafe-reset-all --home $HOME/.marsd --keep-addr-book
+```
+
+### Delete Node
+
+WARNING! Use this command wisely 
+Backup your key first it will remove acre
+
+```
+sudo systemctl stop marsd && \
+sudo systemctl disable marsd && \
+rm /etc/systemd/system/marsd.service && \
+sudo systemctl daemon-reload && \
+cd $HOME && \
+rm -rf .marsd && \
+rm -rf $(which marsd)
+```
