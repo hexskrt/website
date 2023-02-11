@@ -7,7 +7,7 @@ chain: mars-1
 version: v1.0.0
 ---
 
-### Acre CLI Cheatsheet
+### Mars CLI Cheatsheet
 
 - Always be careful with the capitalized words
 - Specify `--chain-id`
@@ -114,12 +114,12 @@ marsd tx staking redelegate $(marsd keys show wallet --bech val -a) <TO_VALOPER_
 
 Unbond Token from your validator
 ```
-marsd tx staking unbond $(marsd keys show wallet --bech val -a) 100000000umars --from wallet --chain-id acre_9052-1 --gas-adjustment 1.4 --gas auto --gas-prices="0.025umars" -y
+marsd tx staking unbond $(marsd keys show wallet --bech val -a) 100000000umars --from wallet --chain-id mars-1 --gas-adjustment 1.4 --gas auto --gas-prices="0.025umars" -y
 ```
 
 Send Token to another wallet
 ```
-marsd tx bank send wallet <TO_WALLET_ADDRESS> 100000000umars --from wallet --chain-id acre_9052-1
+marsd tx bank send wallet <TO_WALLET_ADDRESS> 100000000umars --from wallet --chain-id --chaind-id
 ```
 
 ### Governance 
@@ -128,7 +128,7 @@ Vote
 You can change the value of `yes` to `no`,`abstain`,`nowithveto`
 
 ```
-marsd tx gov vote 1 yes --from wallet --chain-id acre_9052-1 --gas-adjustment 1.4 --gas auto --gas-prices="0.025umars" -y
+marsd tx gov vote 1 yes --from wallet --chain-id mars-1 --gas-adjustment 1.4 --gas auto --gas-prices="0.025umars" -y
 ```
 
 ### Other
