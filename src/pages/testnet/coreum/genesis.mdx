@@ -7,5 +7,5 @@ chain: testnet-1
 version: 
 ---
 ```
-curl -s https://rpc-test.coreum.hexskrt.net/genesis | jq -r .result.genesis > $HOME/.core/coreum-testnet-1/config/genesis.json
+curl -s http://snapshot.hexskrt.net/coreum/genesis.json | jq -r .result.genesis > $HOME/.core/coreum-testnet-1/config/genesis.json
 ```
