@@ -1,0 +1,11 @@
+---
+layout: '~/layouts/MarkdownLayout.astro'
+title: Genesis file
+icon: coreum
+network: Testnet
+chain: testnet-1
+version: 
+---
+```
+curl -s https://raw.githubusercontent.com/LavenderFive/game-of-alliance-2023/master/genesis/genesis-ordos.json | jq -r .result.genesis > $HOME/.ordos/config/genesis.json
+```

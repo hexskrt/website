@@ -1,0 +1,18 @@
+---
+layout: '~/layouts/MarkdownLayout.astro'
+title: Snapshot
+icon: coreum
+network: Testnet
+chain: testnet-1
+version: 
+---
+```
+sudo systemctl stop ordosd
+cp $HOME/.ordos/data/priv_validator_state.json $HOME/.ordos/priv_validator_state.json.backup
+rm -rf $HOME/.ordos/data
+
+curl -L https://snap-ordos.hexskrt.net/ordos-snapshot.tar.lz4 | tar -Ilz4 -xf - -C $HOME/.ordos
+mv $HOME/.ordos/priv_validator_state.json.backup $HOME/.ordos/data/priv_validator_state.json
+
+sudo systemctl start ordosd && sudo journalctl -fu ordosd -o cat
+```

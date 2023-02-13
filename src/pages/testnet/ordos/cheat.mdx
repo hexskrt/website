@@ -1,0 +1,171 @@
+---
+layout: '~/layouts/MarkdownLayout.astro'
+title: Node CLI Cheatsheet
+icon: ordos
+network: Testnet
+chain: ordos-1
+---
+
+### Coreum CLI Cheatsheet
+
+- Always be careful with the capitalized words
+- Specify `--chain-id`
+
+### Wallet Management
+
+Add Wallet
+Specify the value `wallet` with your own wallet name
+
+```
+ordosd keys add wallet
+```
+
+Recover Wallet
+```
+ordosd keys add wallet --recover
+```
+
+List Wallet
+```
+ordosd keys list
+```
+
+Delete Wallet
+```
+ordosd keys delete wallet
+```
+
+Check Wallet Balance
+```
+ordosd q bank balances $(ordosd keys show wallet -a)
+```
+
+### Validator Management
+
+Please adjust `wallet` , `MONIKER` , `YOUR_KEYBASE_ID` , `YOUR_DETAILS` , `YOUUR_WEBSITE_URL`
+
+Create Validator
+```
+ordosd tx staking create-validator -y \
+  --chain-id ordos-1 \
+  --pubkey="$(ordosd tendermint show-validator)" \
+  --moniker="YOUR_MONIKER" \
+  --amount 1000000000uord \
+  --identity "YOUR_KEYBASE_ID" \
+  --website "YOUUR_WEBSITE_URL" \
+  --details "YOUR_DETAILS" \
+  --from wallet \
+  --commission-rate=0.05 \
+  --commission-max-rate=0.20 \
+  --commission-max-change-rate=0.01 \
+  --min-self-delegation 200000000001 \
+  --gas auto
+  --fees=2000uord \
+  -y
+```
+
+Edit Validator
+```
+ordosd tx staking edit-validator \
+--new-moniker="<MONIKER>" \
+--identity="YOUR_KEYBASE_ID" \
+--details="YOUR_DETAILS" \
+--website="YOUR_WEBSITE_URL"
+--chain-id ordos-1 \
+--commission-rate=0.05 \
+--from=wallet \
+--gas auto \
+-y
+```
+
+
+Unjail Validator
+```
+ordosd tx slashing unjail --from wallet --chain-id ordos-1 --gas auto -y
+```
+
+Check Jailed Reason
+```
+ordosd query slashing signing-info $(ordosd tendermint show-validator)
+```
+
+### Token Management
+
+Withdraw Rewards
+```
+ordosd tx distribution withdraw-all-rewards --from wallet --chain-id ordos-1 --gas-adjustment 1.4 --gas auto --gas-prices="0.025uord" -y
+```
+
+Withdraw Rewards with Comission
+```
+ordosd tx distribution withdraw-rewards $(ordosd keys show wallet --bech val -a) --commission --from wallet --chain-id ordos-1 --gas-adjustment 1.4 --gas auto --gas-prices="0.025uord" -y
+```
+
+Delegate Token to your own validator
+```
+ordosd tx staking delegate $(ordosd keys show wallet --bech val -a) 100000000uord --from wallet --chain-id ordos-1 --gas-adjustment 1.4 --gas auto --gas-prices="0.025uord" -y
+```
+
+Delegate Token to other validator
+```
+ordosd tx staking redelegate $(ordosd keys show wallet --bech val -a) <TO_VALOPER_ADDRESS> 100000000uord --from wallet --chain-id ordos-1 --gas-adjustment 1.4 --gas auto --gas-prices="0.025uord" -y
+```
+
+Unbond Token from your validator
+```
+ordosd tx staking unbond $(ordosd keys show wallet --bech val -a) 100000000uord --from wallet --chain-id ordos-1 --gas-adjustment 1.4 --gas auto --gas-prices="0.025uord" -y
+```
+
+Send Token to another wallet
+```
+ordosd tx bank send wallet <TO_WALLET_ADDRESS> 100000000uord --from wallet --chain-id ordos-1
+```
+
+### Governance 
+
+Vote
+You can change the value of `yes` to `no`,`abstain`,`nowithveto`
+
+```
+ordosd tx gov vote 1 yes --from wallet --chain-id ordos-1 --gas-adjustment 1.4 --gas auto --gas-prices="0.025uord" -y
+```
+
+### Other
+
+Set Your own Custom Ports
+You can change value `CUSTOM_PORT=15` To any other ports
+```
+CUSTOM_PORT=15
+sed -i -e "s%^proxy_app = \"tcp://127.0.0.1:26658\"%proxy_app = \"tcp://127.0.0.1:${CUSTOM_PORT}658\"%; s%^laddr = \"tcp://127.0.0.1:26657\"%laddr = \"tcp://127.0.0.1:${CUSTOM_PORT}657\"%; s%^pprof_laddr = \"localhost:6060\"%pprof_laddr = \"localhost:${CUSTOM_PORT}060\"%; s%^laddr = \"tcp://0.0.0.0:26656\"%laddr = \"tcp://0.0.0.0:${CUSTOM_PORT}656\"%; s%^prometheus_listen_addr = \":26660\"%prometheus_listen_addr = \":${CUSTOM_PORT}660\"%" $HOME/.ordos/config/config.toml
+sed -i -e "s%^address = \"tcp://0.0.0.0:1317\"%address = \"tcp://0.0.0.0:${CUSTOM_PORT}317\"%; s%^address = \":8080\"%address = \":${CUSTOM_PORT}080\"%; s%^address = \"0.0.0.0:9090\"%address = \"0.0.0.0:${CUSTOM_PORT}090\"%; s%^address = \"0.0.0.0:9091\"%address = \"0.0.0.0:${CUSTOM_PORT}091\"%" $HOME/.ordos/config/app.toml
+```
+
+Enable Indexing usually enabled by default
+```
+sed -i -e 's|^indexer *=.*|indexer = "kv"|' $HOME/.ordos/config/config.toml
+```
+
+Disable Indexing
+```
+sed -i -e 's|^indexer *=.*|indexer = "null"|' $HOME/.ordos/config/config.toml
+```
+
+Reset Chain Data
+```
+ordosd tendermint unsafe-reset-all --home $HOME/.ordos --keep-addr-book
+```
+
+### Delete Node
+
+WARNING! Use this command wisely 
+Backup your key first it will remove coreum
+
+```
+sudo systemctl stop ordosd && \
+sudo systemctl disable ordosd && \
+rm /etc/systemd/system/ordosd.service && \
+sudo systemctl daemon-reload && \
+cd $HOME && \
+rm -rf .ordos && \
+rm -rf $(which ordosd)
+```

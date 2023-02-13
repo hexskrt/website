@@ -1,0 +1,12 @@
+---
+layout: '~/layouts/MarkdownLayout.astro'
+title: Peers
+icon: ordos
+network: Testnet
+chain: ordos-1
+version: 
+---
+```
+PEERS="418a1b8485e79d7e12f934ce7ec622cfcbde97d3@52.91.39.40:41356,418a1b8485e79d7e12f934ce7ec622cfcbde97d3@52.91.39.40:41356,2c66624a7bbecd94e8be4005d0ece19ce284d7c3@54.196.186.174:41356"
+sed -i -e "s|^persistent_peers *=.*|persistent_peers = \"$PEERS\"|" $HOME/.ordos/config/config.toml
+```
