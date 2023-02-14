@@ -59,7 +59,7 @@ andromedad tx staking create-validator \
   --commission-rate=0.05 \
   --commission-max-rate=0.20 \
   --commission-max-change-rate=0.01 \
-  --min-self-delegation 200000000001 \
+  --min-self-delegation 1 \
   --gas auto
   --fees=2000uandr \
   -y
@@ -68,12 +68,9 @@ andromedad tx staking create-validator \
 Edit Validator
 ```
 andromedad tx staking edit-validator \
---new-moniker="<MONIKER>" \
---identity="YOUR_KEYBASE_ID" \
---details="YOUR_DETAILS" \
---website="YOUR_WEBSITE_URL"
 --chain-id galileo-3 \
---commission-rate=0.05 \
+--commission-rate=0.01 \
+--min-self-delegation=1 \
 --from=wallet \
 --gas auto \
 -y
