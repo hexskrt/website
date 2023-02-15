@@ -1,4 +1,4 @@
-import defaultImage from './assets/images/hexnodes.png';
+import defaultImage from './assets/images/hexnode.png';
 
 const CONFIG = {
   name: 'hexnodes',
