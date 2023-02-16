@@ -7,7 +7,7 @@ chain: galileo-3
 version: v1.1.0-beta1
 ---
 
-### Coreum CLI Cheatsheet
+### Andromeda CLI Cheatsheet
 
 - Always be careful with the capitalized words
 - Specify `--chain-id`
@@ -68,6 +68,10 @@ andromedad tx staking create-validator \
 Edit Validator
 ```
 andromedad tx staking edit-validator \
+--new-moniker "YOUR_MONIKER" \
+--identity "YOUR_KEYBASE_ID" \
+--website "YOUUR_WEBSITE_URL" \
+--details "YOUR_DETAILS" \
 --chain-id galileo-3 \
 --commission-rate=0.01 \
 --min-self-delegation=1 \

@@ -1,0 +1,12 @@
+---
+layout: '~/layouts/MarkdownLayout.astro'
+title: Peers
+icon: dymension
+network: Testnet
+chain: 35-C
+version: v0.2.0-beta
+---
+```
+PEERS="562f840c5f6d11ac846f77502198f7c724ef21b9@185.219.142.32:04656"
+sed -i -e "s|^persistent_peers *=.*|persistent_peers = \"$PEERS\"|" $HOME/.andromedad/config/config.toml
+```

@@ -1,0 +1,175 @@
+---
+layout: '~/layouts/MarkdownLayout.astro'
+title: Node CLI Cheatsheet
+icon: dymension
+network: Testnet
+chain: 35-C
+version: v0.2.0-beta
+---
+
+### Dymension CLI Cheatsheet
+
+- Always be careful with the capitalized words
+- Specify `--chain-id`
+
+### Wallet Management
+
+Add Wallet
+Specify the value `wallet` with your own wallet name
+
+```
+dymd keys add wallet
+```
+
+Recover Wallet
+```
+dymd keys add wallet --recover
+```
+
+List Wallet
+```
+dymd keys list
+```
+
+Delete Wallet
+```
+dymd keys delete wallet
+```
+
+Check Wallet Balance
+```
+dymd q bank balances $(dymd keys show wallet -a)
+```
+
+### Validator Management
+
+Please adjust `wallet` , `MONIKER` , `YOUR_KEYBASE_ID` , `YOUR_DETAILS` , `YOUUR_WEBSITE_URL`
+
+Create Validator
+```
+dymd tx staking create-validator \
+  --chain-id 35-C \
+  --pubkey="$(dymd tendermint show-validator)" \
+  --moniker="YOUR_MONIKER" \
+  --amount 1000000udym \
+  --identity "YOUR_KEYBASE_ID" \
+  --website "YOUR_WEBSITE_URL" \
+  --details "YOUR_DETAILS" \
+  --from wallet \
+  --commission-rate=0.05 \
+  --commission-max-rate=0.20 \
+  --commission-max-change-rate=0.01 \
+  --min-self-delegation 1 \
+  --gas auto \
+  --fees=2000udym \
+  -y
+```
+
+Edit Validator
+```
+dymd tx staking edit-validator \
+--new-moniker "YOUR_MONIKER " \
+--identity "YOUR_KEYBASE_ID" \
+--website "YOUR_WEBSITE_URL" \
+--details "YOUR_DETAILS" \
+--chain-id 35-C \
+--commission-rate=0.01 \
+--min-self-delegation=1 \
+--from=wallet \
+--gas auto \
+-y
+```
+
+
+Unjail Validator
+```
+dymd tx slashing unjail --from wallet --chain-id 35-C --gas auto -y
+```
+
+Check Jailed Reason
+```
+dymd query slashing signing-info $(dymd tendermint show-validator)
+```
+
+### Token Management
+
+Withdraw Rewards
+```
+dymd tx distribution withdraw-all-rewards --from wallet --chain-id 35-C --gas-adjustment 1.4 --gas auto --gas-prices="0.025udym" -y
+```
+
+Withdraw Rewards with Comission
+```
+dymd tx distribution withdraw-rewards $(dymd keys show wallet --bech val -a) --commission --from wallet --chain-id 35-C --gas-adjustment 1.4 --gas auto --gas-prices="0.025udym" -y
+```
+
+Delegate Token to your own validator
+```
+dymd tx staking delegate $(dymd keys show wallet --bech val -a) 100000000udym --from wallet --chain-id 35-C --gas-adjustment 1.4 --gas auto --gas-prices="0.025udym" -y
+```
+
+Delegate Token to other validator
+```
+dymd tx staking redelegate $(dymd keys show wallet --bech val -a) <TO_VALOPER_ADDRESS> 100000000udym --from wallet --chain-id 35-C --gas-adjustment 1.4 --gas auto --gas-prices="0.025udym" -y
+```
+
+Unbond Token from your validator
+```
+dymd tx staking unbond $(dymd keys show wallet --bech val -a) 100000000udym --from wallet --chain-id 35-C --gas-adjustment 1.4 --gas auto --gas-prices="0.025udym" -y
+```
+
+Send Token to another wallet
+```
+dymd tx bank send wallet <TO_WALLET_ADDRESS> 100000000udym --from wallet --chain-id 35-C
+```
+
+### Governance 
+
+Vote
+You can change the value of `yes` to `no`,`abstain`,`nowithveto`
+
+```
+dymd tx gov vote 1 yes --from wallet --chain-id 35-C --gas-adjustment 1.4 --gas auto --gas-prices="0.025udym" -y
+```
+
+### Other
+
+Set Your own Custom Ports
+You can change value `CUSTOM_PORT=15` To any other ports
+```
+CUSTOM_PORT=15
+sed -i -e "s%^proxy_app = \"tcp://127.0.0.1:26658\"%proxy_app = \"tcp://127.0.0.1:${CUSTOM_PORT}658\"%; s%^laddr = \"tcp://127.0.0.1:26657\"%laddr = \"tcp://127.0.0.1:${CUSTOM_PORT}657\"%; s%^pprof_laddr = \"localhost:6060\"%pprof_laddr = \"localhost:${CUSTOM_PORT}060\"%; s%^laddr = \"tcp://0.0.0.0:26656\"%laddr = \"tcp://0.0.0.0:${CUSTOM_PORT}656\"%; s%^prometheus_listen_addr = \":26660\"%prometheus_listen_addr = \":${CUSTOM_PORT}660\"%" $HOME/.dymension/config/config.toml
+sed -i -e "s%^address = \"tcp://0.0.0.0:1317\"%address = \"tcp://0.0.0.0:${CUSTOM_PORT}317\"%; s%^address = \":8080\"%address = \":${CUSTOM_PORT}080\"%; s%^address = \"0.0.0.0:9090\"%address = \"0.0.0.0:${CUSTOM_PORT}090\"%; s%^address = \"0.0.0.0:9091\"%address = \"0.0.0.0:${CUSTOM_PORT}091\"%" $HOME/.dymension/config/app.toml
+```
+
+Enable Indexing usually enabled by default
+```
+sed -i -e 's|^indexer *=.*|indexer = "kv"|' $HOME/.dymension/config/config.toml
+```
+
+Disable Indexing
+```
+sed -i -e 's|^indexer *=.*|indexer = "null"|' $HOME/.dymension/config/config.toml
+```
+
+Reset Chain Data
+```
+dymd tendermint unsafe-reset-all --home $HOME/.dymension --keep-addr-book
+```
+
+### Delete Node
+
+WARNING! Use this command wisely 
+Backup your key first it will remove dymension
+
+```
+sudo systemctl stop dymd && \
+sudo systemctl disable dymd && \
+rm /etc/systemd/system/dymd.service && \
+sudo systemctl daemon-reload && \
+cd $HOME && \
+rm -rf .dymd && \
+rm -rf .dymension && \
+rm -rf dymension && \
+rm -rf $(which dymd)
+```
